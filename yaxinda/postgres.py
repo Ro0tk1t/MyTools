@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 # -*- coding:utf-8 -*-
 import psycopg2
 import argparse
@@ -37,8 +38,12 @@ def execute(number,hours,time):
             print("*** time:  %s, datetime: %s, textid:  %s"%(row[x][0],row[x][1],row[x][2]))
         #nowTime = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime())
         timeFileter()               #含全局变量函数里不能传此全局变量(dates)
-        while(alreadyDone < seconds):
+        while(alreadyDone < seconds & dateCount != 0):
             update(seconds)
+        else:
+            print('[+] Almost Done')
+            conn.close()
+            exit()
 
     except:
         print("[-] Select Error!")
@@ -69,12 +74,22 @@ def update(seconds):
 
 
 def Random(seconds):
+    global dateCount
     global dates
     randomSecond = int(random.uniform(3600,12000))          #生成随机秒数
     randomHours = range(8,18)                               #限制在线时间在8-18小时范围内
     for x in range(len(dates)).reverse():
         tmpDate = time.mktime(strptime(dates[x],"%Y-%m-%d %H:%M:%S")) - randomSecond        #转换为float时间格式，并减去刚生成的随机秒数
-        dates[x] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(tmpDate))               #转换为年月日……的时间格式，准备修改数据 >>>
+        tmpDateH = int(time.strftime('%H',time.localtime(tmpDate)))
+        tmpDate_d = int(time.strftime('%d',time.localtime(tmpDate)))
+        tmpDate_m = int(time.strftime('%m',time.localtime(tmpDate)))
+        dates[x] = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(tmpDate))           #转换为年月日……的时间格式，准备修改数据 >>>
+        if(tmpDateH < 8):
+            dates[x] = dates[x][:11] + '08' + dates[x][13:]
+        elif(tmpDateH > 18):
+            dates[x] = dates[x][:11] + '18' + dates[x][13:]
+
+    dateCount -= 1
     
     return [randomSecond,randomDate]        #返回随机秒数和随机日期
 
@@ -82,7 +97,7 @@ def Random(seconds):
 def timeFileter():
     global dates
     global dateCount
-    dateFormatChange = []
+    #dateFormatChange = []
     lastDay = dates[-1].split('-')[2].split(' ')[0]         #获取最后一天的值
     #lastHour = dates[-1].split(' ')[1].split(':')[0]
     for x in len(dates):
@@ -102,5 +117,7 @@ def timeFileter():
 
 
 if __name__ == '__main__':
-    execute(parsers.n,parsers.h,parsers.t)
-    
+    try:
+        execute(parsers.n,parsers.H,parsers.t)
+    except:
+        print('[-] please give me three parameter')
