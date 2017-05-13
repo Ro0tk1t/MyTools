@@ -53,7 +53,6 @@ def execute(number,hours,time):
     #while(updateResult < hours*60):
      #   updateHours(dates)
 
-
 def update(seconds):
     if(type(dates) == list):
         randomResult = Random(seconds,dates)
