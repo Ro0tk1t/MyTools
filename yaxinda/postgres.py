@@ -33,7 +33,7 @@ def execute(number,hours,time):
         print("++++++++  username is %s  ++++++++"%(row[0][1]))
         cur = execute('select time,datetime,textid from "public"."user_study_history" where userid=%s'%resultId)
         row = cur.fetchall()
-        for x in len(row):      #选出所有的日期，然后集中
+        for x in range(len(row)):      #选出所有的日期，然后集中
             dates[x] = row[x][1]
             print("*** time:  %s, datetime: %s, textid:  %s"%(row[x][0],row[x][1],row[x][2]))
         #nowTime = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime())
@@ -99,7 +99,7 @@ def timeFileter():
     #dateFormatChange = []
     lastDay = dates[-1].split('-')[2].split(' ')[0]         #获取最后一天的值
     #lastHour = dates[-1].split(' ')[1].split(':')[0]
-    for x in len(dates):
+    for x in range(len(dates)):
         tmp = dates[x].split('-')[2].split(' ')[0]
         if(tmp+3 < lastDay):                        #去除三天前的数据
             dates.pop(x)
