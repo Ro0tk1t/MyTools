@@ -18,5 +18,5 @@ print('**************\n\nResults is :')
 for x in range(2,Len):		#因子
 	if(Len%x == 0):
 		result = decrypt(Input, x, Len)
-	#test	print('[+] key=%s   result= %s'%(x,result))
+		print('[+] key=%s   result= %s'%(x,result))
 print('\n**************')
