@@ -10,7 +10,7 @@ parser.add_argument('-H',help="set needed hours")
 parser.add_argument('-t',help="set times")
 parsers = parser.parse_args()
 try:
-    conn = psycopg2.connect(database="tmplate1",user="postgres",password="postgres",host="192.168.10.13",port="5432")
+    conn = psycopg2.connect(database="tmplate1",user="xxxxx",password="xxxxx",host="192.168.10.13",port="5432")
     cur = conn.sursor()
     print("[+] PG Connected !")
 except:
