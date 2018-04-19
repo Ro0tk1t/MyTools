@@ -6,7 +6,7 @@ import queue
 import threading
 
 class SubClient(threading.Thread):
-    def __init__(selfq,q):
+    def __init__(self, q):
         super(SubClient, self).__init__()
         self.q = q
 
@@ -23,11 +23,15 @@ def pull(conn):
     return data
 
 def push(conn):
+    global client_list
     while 1:
         string = input('input sth: ').strip().encode()
-        conn.send(string)
-        #for x in client_list:
-        #    x.send(string)
+        #conn.send(string)
+        for x in client_list:
+            try:
+                x.send(string)
+            except BrokenPipeError:
+                client_list.remove(x)
 
 def start():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -39,11 +43,12 @@ if __name__ == '__main__':
     server = start()
     server.listen(10)
     client_list = []
+    tc = threading.Thread(target=push, args=(client_list,))
+    tc.start()
     while 1:
         conn, addr = server.accept()
         client_list.append(conn)
         print(addr,'  connected !')
-        tc = threading.Thread(target=push, args=(conn,))
-        ts = threading.Thread(target=pull, args=(conn,))
-        tc.start()
-        ts.start()
+        pull(conn)
+        #ts = threading.Thread(target=pull, args=(conn,))
+        #ts.start()
